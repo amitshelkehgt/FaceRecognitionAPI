@@ -102,6 +102,19 @@ class Helper:
             delay = 0.01  # Delay in seconds
             print("Processing video source...", source_name)
             while True:
+
+                # 🔄 Control Check (play/pause/stop)
+                status_doc = self.video_status.find_one({"source_name": source_name})
+                status = status_doc.get("status", "stopped") if status_doc else "stopped"
+
+                if status == "paused":
+                    print(f"Video '{source_name}' is paused.")
+                    sleep(1)
+                    continue
+                elif status == "stopped":
+                    print(f"Video '{source_name}' is stopped.")
+                    break
+
                 if self.cap is None:
                     print("Video source not set.")
                     break

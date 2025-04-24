@@ -1,0 +1,8 @@
+[2025-04-24 06:21:15,185: INFO/MainProcess] Connected to amqp://guest:**@rabbitmq:5672//
+[2025-04-24 06:21:15,268: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-24 06:21:16,405: INFO/MainProcess] mingle: all alone
+[2025-04-24 06:21:16,532: INFO/MainProcess] celery@0ec942b8d22a ready.
+[2025-04-24 06:43:17,067: INFO/MainProcess] Connected to amqp://guest:**@rabbitmq:5672//
+[2025-04-24 06:43:17,437: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-24 06:43:18,503: INFO/MainProcess] mingle: all alone
+[2025-04-24 06:43:18,569: INFO/MainProcess] celery@3484865b84a6 ready.

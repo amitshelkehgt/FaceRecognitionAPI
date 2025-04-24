@@ -13,3 +13,4 @@ imutils
 boto3
 jinja2
 celery
+redis
