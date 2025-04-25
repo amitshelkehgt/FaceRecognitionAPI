@@ -6,3 +6,89 @@
 [2025-04-24 06:43:17,437: INFO/MainProcess] mingle: searching for neighbors
 [2025-04-24 06:43:18,503: INFO/MainProcess] mingle: all alone
 [2025-04-24 06:43:18,569: INFO/MainProcess] celery@3484865b84a6 ready.
+[2025-04-24 13:10:04,398: INFO/MainProcess] Connected to redis://redis:6379/0
+[2025-04-24 13:10:04,404: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-24 13:10:05,416: INFO/MainProcess] mingle: all alone
+[2025-04-24 13:10:05,452: INFO/MainProcess] celery@3f38a9b62603 ready.
+[2025-04-25 06:45:48,407: INFO/MainProcess] Connected to redis://redis:6379/0
+[2025-04-25 06:45:48,412: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-25 06:45:49,423: INFO/MainProcess] mingle: all alone
+[2025-04-25 06:45:49,443: INFO/MainProcess] celery@3f38a9b62603 ready.
+[2025-04-25 06:47:00,094: INFO/MainProcess] Task worker.process_video_task[ae236e9d-e21b-481c-8fc4-ddf87459b498] received
+[2025-04-25 06:47:00,098: WARNING/ForkPoolWorker-5] [CELERY TASK] Processing video source: rtsp
+[2025-04-25 06:47:10,562: WARNING/ForkPoolWorker-5] Processing video source...
+[2025-04-25 06:47:10,563: WARNING/ForkPoolWorker-5]  
+[2025-04-25 06:47:10,563: WARNING/ForkPoolWorker-5] rtsp
+[2025-04-25 06:47:10,565: WARNING/ForkPoolWorker-5] Error processing video source: 'Helper' object has no attribute 'video_status'
+[2025-04-25 06:47:10,569: INFO/ForkPoolWorker-5] Task worker.process_video_task[ae236e9d-e21b-481c-8fc4-ddf87459b498] succeeded in 10.471392572973855s: None
+[2025-04-25 06:53:29,566: INFO/MainProcess] Connected to redis://redis:6379/0
+[2025-04-25 06:53:29,588: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-25 06:53:30,624: INFO/MainProcess] mingle: all alone
+[2025-04-25 06:53:30,667: INFO/MainProcess] celery@76e02cdeb2c8 ready.
+[2025-04-25 07:10:36,550: INFO/MainProcess] Connected to redis://redis:6379/0
+[2025-04-25 07:10:36,563: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-25 07:10:37,588: INFO/MainProcess] mingle: all alone
+[2025-04-25 07:10:37,615: INFO/MainProcess] celery@76d8f5bddeb2 ready.
+[2025-04-25 07:10:40,376: INFO/MainProcess] Events of group {task} enabled by remote.
+[2025-04-25 07:13:31,938: INFO/MainProcess] Task worker.process_video_task[2c4c5240-e302-4e21-8f57-882b26a36784] received
+[2025-04-25 07:13:31,950: WARNING/ForkPoolWorker-5] [CELERY TASK] Processing video source: rtsp
+[2025-04-25 07:14:10,120: WARNING/ForkPoolWorker-5] Processing video source...
+[2025-04-25 07:14:10,122: WARNING/ForkPoolWorker-5]  
+[2025-04-25 07:14:10,122: WARNING/ForkPoolWorker-5] rtsp
+[2025-04-25 07:14:10,123: WARNING/ForkPoolWorker-5] Error processing video source: 'Helper' object has no attribute 'video_status'
+[2025-04-25 07:14:10,205: INFO/ForkPoolWorker-5] Task worker.process_video_task[2c4c5240-e302-4e21-8f57-882b26a36784] succeeded in 38.25771083199652s: None
+[2025-04-25 07:53:15,114: INFO/MainProcess] Connected to redis://redis:6379/0
+[2025-04-25 07:53:15,181: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-25 07:53:16,213: INFO/MainProcess] mingle: all alone
+[2025-04-25 07:53:16,237: INFO/MainProcess] celery@326ec341f6cb ready.
+[2025-04-25 07:53:16,987: INFO/MainProcess] Events of group {task} enabled by remote.
+[2025-04-25 08:11:27,812: INFO/MainProcess] Connected to redis://redis:6379/0
+[2025-04-25 08:11:27,830: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-25 08:11:28,852: INFO/MainProcess] mingle: all alone
+[2025-04-25 08:11:28,871: INFO/MainProcess] celery@38cdc8a1cefb ready.
+[2025-04-25 08:11:30,778: INFO/MainProcess] Events of group {task} enabled by remote.
+[2025-04-25 08:18:22,682: INFO/MainProcess] Connected to redis://redis:6379/0
+[2025-04-25 08:18:22,692: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-25 08:18:23,701: INFO/MainProcess] mingle: all alone
+[2025-04-25 08:18:23,716: INFO/MainProcess] celery@f21bf3555898 ready.
+[2025-04-25 08:18:25,661: INFO/MainProcess] Events of group {task} enabled by remote.
+[2025-04-25 08:29:47,637: INFO/MainProcess] Connected to redis://redis:6379/0
+[2025-04-25 08:29:47,651: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-25 08:29:48,665: INFO/MainProcess] mingle: all alone
+[2025-04-25 08:29:48,697: INFO/MainProcess] celery@10aaac4d94fe ready.
+[2025-04-25 08:29:51,253: INFO/MainProcess] Events of group {task} enabled by remote.
+[2025-04-25 08:39:37,111: INFO/MainProcess] Connected to redis://redis:6379/0
+[2025-04-25 08:39:37,123: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-25 08:39:38,142: INFO/MainProcess] mingle: all alone
+[2025-04-25 08:39:38,165: INFO/MainProcess] celery@9d766fdee582 ready.
+[2025-04-25 08:39:39,511: INFO/MainProcess] Events of group {task} enabled by remote.
+[2025-04-25 08:46:25,247: INFO/MainProcess] Connected to redis://redis:6379/0
+[2025-04-25 08:46:25,266: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-25 08:46:26,280: INFO/MainProcess] mingle: all alone
+[2025-04-25 08:46:26,293: INFO/MainProcess] celery@c369dd4de46d ready.
+[2025-04-25 08:46:29,251: INFO/MainProcess] Events of group {task} enabled by remote.
+[2025-04-25 08:55:43,128: INFO/MainProcess] Connected to redis://redis:6379/0
+[2025-04-25 08:55:43,151: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-25 08:55:44,171: INFO/MainProcess] mingle: all alone
+[2025-04-25 08:55:44,202: INFO/MainProcess] celery@dab78eba7677 ready.
+[2025-04-25 08:55:46,870: INFO/MainProcess] Events of group {task} enabled by remote.
+[2025-04-25 09:14:47,826: INFO/MainProcess] Connected to redis://redis:6379/0
+[2025-04-25 09:14:47,854: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-25 09:14:48,865: INFO/MainProcess] mingle: all alone
+[2025-04-25 09:14:48,876: INFO/MainProcess] celery@699f8ee9d548 ready.
+[2025-04-25 09:14:52,977: INFO/MainProcess] Events of group {task} enabled by remote.
+[2025-04-25 09:34:45,168: INFO/MainProcess] Connected to redis://redis:6379/0
+[2025-04-25 09:34:45,196: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-25 09:34:46,241: INFO/MainProcess] mingle: all alone
+[2025-04-25 09:34:46,282: INFO/MainProcess] celery@f39f1cca6e1e ready.
+[2025-04-25 09:34:50,305: INFO/MainProcess] Events of group {task} enabled by remote.
+[2025-04-25 09:50:29,755: INFO/MainProcess] Connected to redis://redis:6379/0
+[2025-04-25 09:50:29,779: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-25 09:50:30,793: INFO/MainProcess] mingle: all alone
+[2025-04-25 09:50:30,825: INFO/MainProcess] celery@717fd9f41cb6 ready.
+[2025-04-25 09:50:31,694: INFO/MainProcess] Events of group {task} enabled by remote.
+[2025-04-25 10:06:23,748: INFO/MainProcess] Connected to redis://redis:6379/0
+[2025-04-25 10:06:23,771: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-25 10:06:24,820: INFO/MainProcess] mingle: all alone
+[2025-04-25 10:06:24,837: INFO/MainProcess] celery@bae9c68a0048 ready.
+[2025-04-25 10:06:27,933: INFO/MainProcess] Events of group {task} enabled by remote.

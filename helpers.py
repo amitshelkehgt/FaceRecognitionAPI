@@ -1,3 +1,4 @@
+from authenticator import User
 import cv2
 import os
 import numpy as np
@@ -12,6 +13,7 @@ import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError, ClientError
 import io
 import requests
+from celery import Celery
 
 
 class Helper:
@@ -26,6 +28,7 @@ class Helper:
         client = MongoClient(os.getenv("db_url"))
         self.db = client["Face_Recognitions"]
         self.video_sources = self.db["video_sources"]
+        self.video_status = self.db["video_status"]
         self.current_video_source = None
         self.face_embeddings = self.db["face_embeddings"]
 
@@ -88,7 +91,7 @@ class Helper:
         #         print(f"Credentials error: {e}")
         #         return
 
-    def process_video_source(self, source_name=None):
+    def process_video_source(self, source_name=None, user:User=None):
         try:
             if source_name:
                 self.current_video_source = source_name
@@ -104,7 +107,7 @@ class Helper:
             while True:
 
                 # 🔄 Control Check (play/pause/stop)
-                status_doc = self.video_status.find_one({"source_name": source_name})
+                status_doc = self.get_video_status(source_name, user)
                 status = status_doc.get("status", "stopped") if status_doc else "stopped"
 
                 if status == "paused":
@@ -144,7 +147,30 @@ class Helper:
         except Exception as e:
             print(f"Error processing video source: {e}")
         
-    
+    def set_video_status(self, source_name, status, current_user: User = None):
+        if current_user:
+            user_id = current_user.user_id
+            self.video_status.update_one(
+                {"source_name": source_name, "user_id": user_id},
+                {"$set": {"status": status}},
+                upsert=True # Create the document if it doesn't exist   
+            )
+        else:
+            # If no user is provided, update the status for all users
+            self.video_status.update_one(
+                {"source_name": source_name},
+                {"$set": {"status": status}},
+                upsert=True # Create the document if it doesn't exist   
+            )
+    def get_video_status(self, source_name, user: User = None):
+        if user:
+            user_id = user.user_id
+            status_doc = self.video_status.find_one({"source_name": source_name, "user_id": user_id})
+        else:
+            status_doc = self.video_status.find_one({"source_name": source_name})
+        if status_doc:
+            return status_doc.get("status", "stopped")
+        return "stopped"
 
     def process_face(self, face, frame, face_embeddings = None, known_face_embeddings = None):
         if face_embeddings is None or known_face_embeddings is None:
@@ -277,3 +303,11 @@ class Helper:
             _, buffer = cv2.imencode(".jpg", frame)
             yield (b"--frame\r\n"
                 b"Content-Type: image/jpeg\r\n\r\n" + buffer.tobytes() + b"\r\n")
+            
+    def celery(self):
+        celery = Celery(
+            "worker",
+            broker=os.getenv("CELERY_BROKER_URL", "redis://redis:6379/0"),
+            backend=os.getenv("CELERY_RESULT_BACKEND", "redis://redis:6379/0")
+        )
+        return celery
