@@ -183,7 +183,7 @@ async def video_feed(current_user: Annotated[User, Depends(get_current_active_us
 
 @app.get("/process_video_source/{source_name}")
 async def process_video_source_by_name(current_user: Annotated[User, Depends(get_current_active_user)],source_name: str):
-    task = process_video_task.delay(source_name, current_user)
+    task = process_video_task.delay(source_name, current_user.dict())
     return {"message": f"Processing for '{source_name}' started.", "task_id": task.id}
 
 

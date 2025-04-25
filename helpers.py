@@ -162,6 +162,7 @@ class Helper:
                 {"$set": {"status": status}},
                 upsert=True # Create the document if it doesn't exist   
             )
+    
     def get_video_status(self, source_name, user: User = None):
         if user:
             user_id = user.user_id
