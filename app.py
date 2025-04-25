@@ -183,7 +183,8 @@ async def video_feed(current_user: Annotated[User, Depends(get_current_active_us
 
 @app.get("/process_video_source/{source_name}")
 async def process_video_source_by_name(current_user: Annotated[User, Depends(get_current_active_user)],source_name: str):
-    task = process_video_task.delay(source_name, current_user.dict())
+    user = User.model_construct(**current_user.model_dump())
+    task = process_video_task.delay(source_name, user.model_dump())
     return {"message": f"Processing for '{source_name}' started.", "task_id": task.id}
 
 
@@ -191,12 +192,12 @@ async def process_video_source_by_name(current_user: Annotated[User, Depends(get
 def get_control_video_status(current_user: Annotated[User, Depends(get_current_active_user)],source_name: str):
     # if action not in ["play", "pause", "stop"]:
     #     return {"error": "Invalid action"}
-    action = myhelper.get_video_source(source_name, current_user)
+    action = myhelper.get_video_status(source_name, current_user)
     return {"status": action, "source":source_name}
 
 @app.post("/video_control/{source_name}")
 def control_video(current_user: Annotated[User, Depends(get_current_active_user)],source_name: str, action: str):
     if action not in ["play", "pause", "stop"]:
         return {"error": "Invalid action"}
-    myhelper.set_video_source(source_name, action, current_user)
+    myhelper.set_video_status(source_name, action, current_user)
     return {"message": f"{action} command sent to video source '{source_name}'."}

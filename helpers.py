@@ -148,8 +148,8 @@ class Helper:
             print(f"Error processing video source: {e}")
         
     def set_video_status(self, source_name, status, current_user: User = None):
-        if current_user:
-            user_id = current_user.user_id
+        if current_user and current_user.email:
+            user_id = current_user.email
             self.video_status.update_one(
                 {"source_name": source_name, "user_id": user_id},
                 {"$set": {"status": status}},
@@ -164,8 +164,8 @@ class Helper:
             )
     
     def get_video_status(self, source_name, user: User = None):
-        if user:
-            user_id = user.user_id
+        if user and user.email:
+            user_id = user.email
             status_doc = self.video_status.find_one({"source_name": source_name, "user_id": user_id})
         else:
             status_doc = self.video_status.find_one({"source_name": source_name})
