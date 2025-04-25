@@ -164,7 +164,7 @@ class Helper:
             )
     
     def get_video_status(self, source_name, user: User = None):
-        if user and user.email:
+        if user and "email" in user:
             user_id = user.email
             status_doc = self.video_status.find_one({"source_name": source_name, "user_id": user_id})
         else:

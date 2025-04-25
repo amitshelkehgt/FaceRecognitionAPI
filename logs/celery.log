@@ -1,0 +1,36 @@
+[2025-04-25 13:47:21,346: INFO/MainProcess] Connected to redis://redis:6379/0
+[2025-04-25 13:47:21,370: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-25 13:47:22,462: INFO/MainProcess] mingle: all alone
+[2025-04-25 13:47:22,484: INFO/MainProcess] celery@61ae97b09682 ready.
+[2025-04-25 13:47:26,300: INFO/MainProcess] Events of group {task} enabled by remote.
+[2025-04-25 13:48:29,954: INFO/MainProcess] Task worker.process_video_task[4477b97b-73f2-47f9-a731-97f3c420d34b] received
+[2025-04-25 13:48:29,957: WARNING/ForkPoolWorker-5] [CELERY TASK] Processing video source: rtsp
+[2025-04-25 13:49:07,885: WARNING/ForkPoolWorker-5] Processing video source...
+[2025-04-25 13:49:07,886: WARNING/ForkPoolWorker-5]  
+[2025-04-25 13:49:07,887: WARNING/ForkPoolWorker-5] rtsp
+[2025-04-25 13:49:07,888: WARNING/ForkPoolWorker-5] Error processing video source: 'dict' object has no attribute 'email'
+[2025-04-25 13:49:07,891: INFO/ForkPoolWorker-5] Task worker.process_video_task[4477b97b-73f2-47f9-a731-97f3c420d34b] succeeded in 37.93444985700012s: None
+[2025-04-25 13:51:17,244: INFO/MainProcess] Connected to redis://redis:6379/0
+[2025-04-25 13:51:17,252: INFO/MainProcess] mingle: searching for neighbors
+[2025-04-25 13:51:18,314: INFO/MainProcess] mingle: all alone
+[2025-04-25 13:51:18,429: INFO/MainProcess] celery@4a975d5afd24 ready.
+[2025-04-25 13:51:21,113: INFO/MainProcess] Events of group {task} enabled by remote.
+[2025-04-25 13:53:38,025: WARNING/MainProcess] Traceback (most recent call last):
+[2025-04-25 13:53:38,026: WARNING/MainProcess]   File "/usr/local/lib/python3.13/multiprocessing/util.py", line 292, in _run_finalizers
+    finalizer()
+    ~~~~~~~~~^^
+[2025-04-25 13:53:38,027: WARNING/MainProcess]   File "/usr/local/lib/python3.13/multiprocessing/util.py", line 216, in __call__
+    res = self._callback(*self._args, **self._kwargs)
+[2025-04-25 13:53:38,028: WARNING/MainProcess]   File "/usr/local/lib/python3.13/multiprocessing/util.py", line 125, in _remove_temp_dir
+    rmtree(tempdir)
+    ~~~~~~^^^^^^^^^
+[2025-04-25 13:53:38,029: WARNING/MainProcess]   File "/usr/local/lib/python3.13/shutil.py", line 763, in rmtree
+    _rmtree_safe_fd(stack, onexc)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+[2025-04-25 13:53:38,029: WARNING/MainProcess]   File "/usr/local/lib/python3.13/shutil.py", line 707, in _rmtree_safe_fd
+    onexc(func, path, err)
+    ~~~~~^^^^^^^^^^^^^^^^^
+[2025-04-25 13:53:38,030: WARNING/MainProcess]   File "/usr/local/lib/python3.13/shutil.py", line 658, in _rmtree_safe_fd
+    os.rmdir(name, dir_fd=dirfd)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+[2025-04-25 13:53:38,030: WARNING/MainProcess] OSError: [Errno 30] Read-only file system: '/tmp/pymp-2csriyj6'

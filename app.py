@@ -172,8 +172,8 @@ def register_callback(current_user: Annotated[User, Depends(get_current_active_u
     return {"message": f"Callback for '{cb.name}' registered with event '{cb.event}'."}
 
 @app.get("/video_feed/{source_name}")
-async def video_feed(current_user: Annotated[User, Depends(get_current_active_user)],source_name: str):
-    source = video_sources.find_one({"source_name": source_name,"user_id": current_user.user_id})
+async def video_feed(source_name: str):
+    source = video_sources.find_one({"source_name": source_name})
     if not source:
         return PlainTextResponse(content="Video source not found.", status_code=404)
     return StreamingResponse(
