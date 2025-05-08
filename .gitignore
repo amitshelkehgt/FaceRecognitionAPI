@@ -6,4 +6,12 @@ __pycache__/
 
 *.log
 
+<<<<<<< Updated upstream
 models/
+=======
+<<<<<<< HEAD
+/models
+=======
+models/
+>>>>>>> 110158e549f083c65d39832752fc4405627f49ea
+>>>>>>> Stashed changes

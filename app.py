@@ -65,10 +65,20 @@ myhelper = Helper()
 
 # ===== Routes =====
 
+# @app.get("/")
+# def homepage(request: Request):
+#     return templates.TemplateResponse(
+#         request=request, name="index.html", context={"request": request}
+#     )
+
 @app.get("/")
 def homepage(request: Request):
+    sources = list(video_sources.find({}, {"_id": 0, "source_name": 1}))
+    source_names = [s["source_name"] for s in sources]
     return templates.TemplateResponse(
-        request=request, name="index.html", context={"request": request}
+        request=request,
+        name="index.html",
+        context={"request": request, "video_sources": source_names}
     )
 
 app.add_middleware(
@@ -145,6 +155,51 @@ class VideoSource(BaseModel):
     source_name: str
     rtsp_url: str
 
+
+@app.post("/recognize_face")
+def recognize_face(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    image: UploadFile = File(...),
+):
+    try:
+        image_bytes = image.file.read()
+        faces = get_embeddings(image_bytes)
+    except Exception as e:
+        return PlainTextResponse(status_code=500, content=f"Error processing image: {str(e)}")
+
+    if not faces:
+        return PlainTextResponse(status_code=404, content="No face found")
+
+    embedding = faces[0].embedding / np.linalg.norm(faces[0].embedding)
+
+    # Load known embeddings from MongoDB
+    try:
+        face_embeddings_list = list(db["face_embeddings"].find({}))
+        if not face_embeddings_list:
+            return PlainTextResponse(status_code=404, content="No stored face embeddings found")
+        
+        known_embeddings = np.array([np.array(i["embedding"]) for i in face_embeddings_list])
+    except Exception as e:
+        return PlainTextResponse(status_code=500, content=f"Error loading embeddings: {str(e)}")
+
+    # Calculate distance to all known embeddings
+    distances = np.linalg.norm(known_embeddings - embedding, axis=1)
+    best_match_index = np.argmin(distances)
+
+    tolerance = 1.0  # adjust as needed
+
+    if distances[best_match_index] > tolerance:
+        return PlainTextResponse(status_code=404, content="Face not recognized")
+
+    matched_user = face_embeddings_list[best_match_index]
+
+    return {
+        "user_id": str(matched_user["_id"]),
+        "name": matched_user["name"],
+        "distance": float(distances[best_match_index])
+    }
+   
+
 @app.post("/register_video_source")
 def register_video_source(current_user: Annotated[User, Depends(get_current_active_user)], source: VideoSource):
     video_sources.update_one(
@@ -200,4 +255,11 @@ def control_video(current_user: Annotated[User, Depends(get_current_active_user)
     if action not in ["play", "pause", "stop"]:
         return {"error": "Invalid action"}
     myhelper.set_video_status(source_name, action, current_user)
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+>>>>>>> Stashed changes
     return {"message": f"{action} command sent to video source '{source_name}'."}
+=======
+    return {"message": f"{action} command sent to video source '{source_name}'."}
+>>>>>>> 110158e549f083c65d39832752fc4405627f49ea

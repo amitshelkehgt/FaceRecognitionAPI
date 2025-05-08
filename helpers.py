@@ -72,9 +72,16 @@ class Helper:
         if source == "0":
             self.cap = cv2.VideoCapture(0)  # Use 0 for webcam
             return
-        if source.startswith("rtsp://"):
+        elif source.startswith("rtsp://"):
+            self.cap = cv2.VideoCapture(f"{source}?rtsp_transport=tcp", cv2.CAP_FFMPEG)
+        else:    
             self.cap = cv2.VideoCapture(source, cv2.CAP_FFMPEG)
             return
+        
+        # Adjust video capture properties
+        if self.cap.isOpened():
+            self.cap.set(cv2.CAP_PROP_FPS, 30)  # Set the frames per second (if needed)
+            self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)  # Reduce buffer size to avoid lag
         # if source.startswith("http://") or source.startswith("https://"):
         #     self.cap = cv2.VideoCapture(source, cv2.CAP_FFMPEG)
         #     return

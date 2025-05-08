@@ -1,50 +1,108 @@
 <!-- <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Live Camera Feed</title>
-  <style>
-    body {
-      background-color: #111;
-      color: #fff;
-      text-align: center;
-      font-family: Arial, sans-serif;
-    }
-
-    h1 {
-      margin-top: 20px;
-    }
-
-    .video-container {
-      margin-top: 30px;
-    }
-
-    img {
-      border: 4px solid #00ffcc;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
-      max-width: 90%;
-      height: auto;
-    }
-  </style>
-</head>
-<body>
-  <h1>🔴 Live Camera Feed</h1>
-  <div class="video-container">
-    <img src="http://<YOUR-SERVER-IP>:5000/video_feed" alt="Live Stream">
-  </div>
-</body>
-</html> -->
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Live Face Stream</title>
+    <title>Face Recognition Feed</title>
 </head>
 <body style="text-align: center; background-color: #111; color: #fff;">
-  <h1>Live Camera Feed</h1>
-  <img src="/video_feed/rtsp" width="640" height="480" />
+    <h1>Live Video Feed</h1>
+
+    <label for="videoSource">Select Video Source:</label>
+    <select id="videoSource" onchange="updateFeed()">
+        {% for source in video_sources %}
+            <option value="{{ source }}">{{ source }}</option>
+        {% endfor %}
+    </select>
+
+    <br><br>
+
+    <img id="videoFeed" src="/video_feed/{{ video_sources[0] }}" alt="Video Feed" width="640" height="480">
+
+    <script>
+        function updateFeed() {
+            const sourceName = document.getElementById("videoSource").value;
+            document.getElementById("videoFeed").src = `/video_feed/${sourceName}`;
+        }
+    </script>
+</body>
+</html>
+ -->
+
+
+ <!DOCTYPE html>
+<html>
+<head>
+  <title>Face Recognition</title>
+</head>
+<body>
+  <h2>Login</h2>
+  <form id="loginForm">
+    <input type="hidden" name="grant_type" value="password" />
+    <label>Username: <input name="username" required /></label><br />
+    <label>Password: <input name="password" type="password" required /></label><br />
+    <button type="submit">Get Token</button>
+  </form>
+
+  <div id="tokenStatus"></div>
+
+  <hr />
+
+  <h2>Recognize Face</h2>
+  <form id="recognizeForm" enctype="multipart/form-data">
+    <input type="file" name="image" accept="image/*" required /><br />
+    <button type="submit">Recognize Face</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    let token = "";
+
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const params = new URLSearchParams(formData);
+
+      const response = await fetch("/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: params,
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        token = data.access_token;
+        document.getElementById("tokenStatus").innerText = "Token received!";
+      } else {
+        document.getElementById("tokenStatus").innerText = "Login failed: " + JSON.stringify(data);
+      }
+    });
+
+    document.getElementById("recognizeForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!token) {
+        alert("Please log in first to get token.");
+        return;
+      }
+
+      const formData = new FormData(e.target);
+
+      const response = await fetch("/recognize_face", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        document.getElementById("result").innerText = "Face recognized: " + JSON.stringify(data);
+      } else {
+        document.getElementById("result").innerText = "Failed: " + JSON.stringify(data);
+      }
+    });
+  </script>
 </body>
 </html>
