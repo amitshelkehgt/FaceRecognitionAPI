@@ -255,11 +255,4 @@ def control_video(current_user: Annotated[User, Depends(get_current_active_user)
     if action not in ["play", "pause", "stop"]:
         return {"error": "Invalid action"}
     myhelper.set_video_status(source_name, action, current_user)
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
->>>>>>> Stashed changes
     return {"message": f"{action} command sent to video source '{source_name}'."}
-=======
-    return {"message": f"{action} command sent to video source '{source_name}'."}
->>>>>>> 110158e549f083c65d39832752fc4405627f49ea
