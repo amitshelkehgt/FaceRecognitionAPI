@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login & Register</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body class="bg-light">
+  <div class="container mt-5 bg-white p-4 rounded shadow" style="max-width: 600px;">
+    <ul class="nav nav-tabs mb-4" id="authTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#loginTab" type="button">Login</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#registerTab" type="button">Register</button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="authTabsContent">
+      <!-- Login Tab -->
+      <div class="tab-pane fade show active" id="loginTab" role="tabpanel">
+        <form id="loginForm">
+          <input type="hidden" name="grant_type" value="password" />
+          <div class="mb-3">
+            <label class="form-label">Username:</label>
+            <input name="username" class="form-control" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password:</label>
+            <input name="password" type="password" class="form-control" required />
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+        <div id="loginMessage" class="alert mt-3 d-none"></div>
+      </div>
+
+      <!-- Register Tab -->
+      <div class="tab-pane fade" id="registerTab" role="tabpanel">
+        <form id="registerForm" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label class="form-label">Username:</label>
+            <input name="username" class="form-control" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password:</label>
+            <input name="password" type="password" class="form-control" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Full Name:</label>
+            <input name="full_name" class="form-control" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email:</label>
+            <input name="email" type="email" class="form-control" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Upload Face Image:</label>
+            <input type="file" name="face_image" accept="image/*" class="form-control" required />
+          </div>
+          <button type="submit" class="btn btn-success w-100">Register</button>
+        </form>
+        <div id="registerMessage" class="alert mt-3 d-none"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // LOGIN HANDLER
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const params = new URLSearchParams(formData);
+      const response = await fetch("/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params,
+      });
+
+      const data = await response.json();
+      const messageDiv = document.getElementById("loginMessage");
+
+      if (response.ok) {
+        sessionStorage.setItem("token", data.access_token);
+        window.location.href = "/recognize";
+      } else {
+        messageDiv.className = "alert alert-danger";
+        messageDiv.textContent = "❌ Login failed: " + data.detail;
+        messageDiv.classList.remove("d-none");
+      }
+    });
+
+    // REGISTER HANDLER
+    document.getElementById("registerForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const messageDiv = document.getElementById("registerMessage");
+      messageDiv.classList.add("d-none");
+
+      const userInfo = {
+        username: form.username.value,
+        password: form.password.value,
+        full_name: form.full_name.value,
+        email: form.email.value,
+      };
+
+      // 1. Register user
+      const registerResponse = await fetch("/register_user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userInfo),
+      });
+
+      if (!registerResponse.ok) {
+        const error = await registerResponse.text();
+        messageDiv.className = "alert alert-danger";
+        messageDiv.textContent = "❌ Registration failed: " + error;
+        messageDiv.classList.remove("d-none");
+        return;
+      }
+
+      // 2. Login to get token
+      const loginParams = new URLSearchParams();
+      loginParams.append("username", userInfo.username);
+      loginParams.append("password", userInfo.password);
+      loginParams.append("grant_type", "password");
+
+      const loginResponse = await fetch("/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: loginParams,
+      });
+
+      const loginData = await loginResponse.json();
+      if (!loginResponse.ok) {
+        messageDiv.className = "alert alert-danger";
+        messageDiv.textContent = "❌ Login after registration failed: " + loginData.detail;
+        messageDiv.classList.remove("d-none");
+        return;
+      }
+
+      const token = loginData.access_token;
+
+      // 3. Register face
+      const formData = new FormData();
+      formData.append("name", userInfo.full_name || userInfo.username);
+      formData.append("image", form.face_image.files[0]);
+
+      const faceResponse = await fetch("/register_face", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + token },
+        body: formData,
+      });
+
+      const faceResult = await faceResponse.text();
+      if (!faceResponse.ok) {
+        messageDiv.className = "alert alert-warning";
+        messageDiv.textContent = "⚠️ Face registration failed: " + faceResult;
+        messageDiv.classList.remove("d-none");
+        return;
+      }
+
+      // ✅ All success
+      messageDiv.className = "alert alert-success";
+      messageDiv.textContent = "✅ Registration complete: " + faceResult;
+      messageDiv.classList.remove("d-none");
+
+      sessionStorage.setItem("token", token);
+      setTimeout(() => { window.location.href = "/recognize"; }, 1000);
+    });
+  </script>
+</body>
+</html>

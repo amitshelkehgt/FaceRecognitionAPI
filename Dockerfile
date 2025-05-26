@@ -3,6 +3,10 @@ FROM python:latest
 # Set work directory
 WORKDIR /usr/src/app
 
+# Set timezone
+ENV TZ=Asia/Kolkata
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # # Set environment variables correctly
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1

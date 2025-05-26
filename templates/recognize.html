@@ -1,0 +1,284 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Recognize Face</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    #videoElement {
+      width: 100%;
+      max-height: 300px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+    #captureCanvas {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5 bg-white p-4 rounded shadow" style="max-width: 700px;">
+    <h2 class="mb-4"><span>📸</span> Recognize Face</h2>
+
+  
+    <div class="mb-3">
+      <video id="videoElement" autoplay></video>
+      <button class="btn btn-primary" id="captureBtn">Capture & Recognize</button>
+    </div>
+    <canvas id="captureCanvas" width="640" height="480"></canvas>
+
+    <hr>
+
+    
+    <form id="recognizeForm" enctype="multipart/form-data">
+      <div class="mb-3">
+        <input type="file" name="image" accept="image/*" class="form-control" required />
+      </div>
+      <button type="submit" class="btn btn-success">Upload & Recognize</button>
+    </form>
+
+    <div id="result" class="alert mt-3 d-none"></div>
+  </div>
+
+  <script>
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/login";
+    }
+
+    const resultDiv = document.getElementById("result");
+
+    
+    document.getElementById("recognizeForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+
+      await recognizeFace(formData);
+    });
+
+    
+    const video = document.getElementById("videoElement");
+    const canvas = document.getElementById("captureCanvas");
+    const captureBtn = document.getElementById("captureBtn");
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        console.error("❌ Webcam error:", err);
+      });
+
+    
+    captureBtn.addEventListener("click", async () => {
+      const context = canvas.getContext("2d");
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(async (blob) => {
+        const formData = new FormData();
+        formData.append("image", blob, "capture.jpg");
+        await recognizeFace(formData);
+      }, "image/jpeg");
+    });
+
+    
+    async function recognizeFace(formData) {
+      const response = await fetch("/recognize_face", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+        body: formData,
+      });
+
+      try {
+        const data = await response.json();
+        if (response.ok) {
+          let message = `
+            ✅ <strong>Face recognized successfully</strong><br>
+            <b>Name:</b> ${data.name}<br>
+            <b>Distance:</b> ${data.distance.toFixed(4)}<br>
+          `;
+          if (data.attendance) {
+            message += `
+              <b>Date:</b> ${data.attendance.date}<br>
+              <b>Arrival Time:</b> ${data.attendance.arrival_time}<br>
+              <b>Departure Time:</b> ${data.attendance.departure_time}<br>
+            `;
+          }
+          resultDiv.className = "alert alert-success";
+          resultDiv.innerHTML = message;
+        } else {
+          resultDiv.className = "alert alert-danger";
+          resultDiv.textContent = "❌ Face not recognized: " + JSON.stringify(data);
+        }
+      } catch (err) {
+        resultDiv.className = "alert alert-danger";
+        resultDiv.textContent = "❌ Error processing image.";
+      }
+
+      resultDiv.classList.remove("d-none");
+    }
+  </script>
+</body>
+</html>
+ -->
+
+
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+   <meta charset="UTF-8" />
+   <title>Recognize Multiple Faces</title>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+   <style>
+     #videoElement {
+       width: 100%;
+       max-height: 300px;
+       border: 1px solid #ccc;
+       margin-bottom: 10px;
+     }
+     #captureCanvas {
+       display: none;
+     }
+     #capturedImage {
+       max-height: 300px;
+       border: 1px solid #ccc;
+       margin-bottom: 10px;
+     }
+   </style>
+ </head>
+ <body>
+ 
+   <!-- Sign Out Button -->
+   <div class="d-flex justify-content-end mb-3">
+     <button class="btn btn-outline-danger btn-sm" id="signOutBtn">Sign Out</button>
+   </div>
+   
+ 
+   <div class="container mt-5 bg-white p-4 rounded shadow" style="max-width: 700px;">
+     <h2 class="mb-4"><span>📸</span> Recognize Multiple Faces</h2>
+ 
+     <!-- Webcam Preview -->
+     <div class="mb-3">
+       <video id="videoElement" autoplay></video>
+       <button class="btn btn-primary mt-2" id="captureBtn">Capture & Recognize</button>
+     </div>
+ 
+     <!-- Captured Image Preview -->
+     <div class="mb-3">
+       <img id="capturedImage" src="" alt="Captured Image" class="img-fluid rounded border d-none" />
+     </div>
+ 
+     <canvas id="captureCanvas" width="640" height="480" class="d-none"></canvas>
+ 
+     <hr>
+ 
+     <!-- Upload Form -->
+     <form id="recognizeForm" enctype="multipart/form-data">
+       <div class="mb-3">
+         <input type="file" name="image" accept="image/*" class="form-control" required />
+       </div>
+       <button type="submit" class="btn btn-success">Upload & Recognize</button>
+     </form>
+ 
+     <div id="result" class="alert mt-3 d-none"></div>
+   </div>
+ 
+   <script>
+    // Sign out handler
+     document.getElementById("signOutBtn").addEventListener("click", () => {
+         sessionStorage.removeItem("token");
+         window.location.href = "/";
+     });
+ 
+     const token = sessionStorage.getItem("token");
+     if (!token) {
+       window.location.href = "/";
+     }
+ 
+     const resultDiv = document.getElementById("result");
+ 
+     // Handle Upload Form
+     document.getElementById("recognizeForm").addEventListener("submit", async (e) => {
+       e.preventDefault();
+       const formData = new FormData(e.target);
+       await recognizeFaces(formData);
+     });
+ 
+     // Webcam Setup
+     const video = document.getElementById("videoElement");
+     const canvas = document.getElementById("captureCanvas");
+     const captureBtn = document.getElementById("captureBtn");
+     const capturedImage = document.getElementById("capturedImage");
+ 
+     navigator.mediaDevices.getUserMedia({ video: true })
+       .then(stream => {
+         video.srcObject = stream;
+       })
+       .catch(err => {
+         console.error("❌ Webcam error:", err);
+       });
+ 
+     // Capture and Recognize
+     captureBtn.addEventListener("click", async () => {
+       const context = canvas.getContext("2d");
+       context.drawImage(video, 0, 0, canvas.width, canvas.height);
+ 
+       // Show the captured image
+       const imageDataURL = canvas.toDataURL("image/jpeg");
+       capturedImage.src = imageDataURL;
+       capturedImage.classList.remove("d-none");
+ 
+       // Convert to blob and send for recognition
+       canvas.toBlob(async (blob) => {
+         const formData = new FormData();
+         formData.append("image", blob, "capture.jpg");
+         await recognizeFaces(formData);
+       }, "image/jpeg");
+     });
+ 
+     async function recognizeFaces(formData) {
+       resultDiv.classList.add("d-none");
+ 
+       const response = await fetch("/recognize_face", {
+         method: "POST",
+         headers: {
+           Authorization: "Bearer " + token,
+         },
+         body: formData,
+       });
+ 
+       try {
+         const data = await response.json();
+ 
+         if (response.ok) {
+           if (Array.isArray(data) && data.length > 0) {
+             let html = "<strong>✅Face Recognized:</strong><br><ul>";
+             data.forEach(face => {
+               html += `<li><b>Name:</b> ${face.name}, <b>Distance:</b> ${face.distance.toFixed(4)}</li>`;
+             });
+             html += "</ul>";
+ 
+             resultDiv.className = "alert alert-success";
+             resultDiv.innerHTML = html;
+           } else if (data.name) {
+             resultDiv.className = "alert alert-success";
+             resultDiv.innerHTML = `<b>Name:</b> ${data.name}, <b>Distance:</b> ${data.distance.toFixed(4)}`;
+           } else {
+             resultDiv.className = "alert alert-warning";
+             resultDiv.textContent = "⚠️ No known faces recognized.";
+           }
+         } else {
+           resultDiv.className = "alert alert-danger";
+           resultDiv.textContent = "❌ Face recognition failed: " + JSON.stringify(data);
+         }
+       } catch (err) {
+         resultDiv.className = "alert alert-danger";
+         resultDiv.textContent = "❌ No face detected. Please register your face or image first";
+       }
+ 
+       resultDiv.classList.remove("d-none");
+     }
+   </script>
+ </body>
+ </html>
